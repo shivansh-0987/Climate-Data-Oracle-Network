@@ -8,7 +8,6 @@ pragma solidity ^0.8.9;
 contract Project {
     address public owner;
     
-    // Oracle data structure
     struct DataPoint {
         uint256 timestamp;
         string dataType;
@@ -18,60 +17,35 @@ contract Project {
         bool verified;
     }
     
-    // Mapping from data ID to DataPoint
     mapping(bytes32 => DataPoint) public climateData;
-    
-    // Array to store all data IDs
     bytes32[] public dataIds;
-    
-    // Mapping for authorized data providers
     mapping(address => bool) public authorizedProviders;
-    
-    // Events
+    mapping(bytes32 => bool) private dataIdExists;
+
     event DataSubmitted(bytes32 indexed dataId, string dataType, int256 value, string location);
     event DataVerified(bytes32 indexed dataId, bool verified);
     event ProviderAuthorized(address indexed provider, bool status);
-    
-    /**
-     * @dev Constructor sets the owner to the contract deployer
-     */
+    event DataRevoked(bytes32 indexed dataId);
+
     constructor() {
         owner = msg.sender;
     }
-    
-    /**
-     * @dev Modifier to check if the caller is the owner
-     */
+
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner can call this function");
         _;
     }
-    
-    /**
-     * @dev Modifier to check if the caller is an authorized provider
-     */
+
     modifier onlyAuthorizedProvider() {
         require(authorizedProviders[msg.sender], "Provider not authorized");
         _;
     }
-    
-    /**
-     * @dev Authorizes or deauthorizes a data provider
-     * @param provider Address of the provider
-     * @param status Authorization status
-     */
+
     function setProviderAuthorization(address provider, bool status) public onlyOwner {
         authorizedProviders[provider] = status;
         emit ProviderAuthorized(provider, status);
     }
-    
-    /**
-     * @dev Submits climate data to the oracle network
-     * @param dataType Type of climate data (e.g., "temperature", "humidity")
-     * @param value The climate data value (scaled to handle decimals)
-     * @param location The geographical location of the data point
-     * @return dataId The unique identifier for the submitted data
-     */
+
     function submitData(
         string memory dataType,
         int256 value,
@@ -85,6 +59,8 @@ contract Project {
             block.timestamp
         ));
         
+        require(!dataIdExists[dataId], "Duplicate data");
+
         climateData[dataId] = DataPoint({
             timestamp: block.timestamp,
             dataType: dataType,
@@ -93,37 +69,20 @@ contract Project {
             provider: msg.sender,
             verified: false
         });
-        
+
         dataIds.push(dataId);
-        
+        dataIdExists[dataId] = true;
+
         emit DataSubmitted(dataId, dataType, value, location);
-        
         return dataId;
     }
-    
-    /**
-     * @dev Verifies climate data (can only be called by the owner)
-     * @param dataId Unique identifier of the data to verify
-     * @param verified Verification status
-     */
+
     function verifyData(bytes32 dataId, bool verified) public onlyOwner {
         require(climateData[dataId].timestamp > 0, "Data doesn't exist");
-        
         climateData[dataId].verified = verified;
-        
         emit DataVerified(dataId, verified);
     }
-    
-    /**
-     * @dev Retrieves climate data by ID
-     * @param dataId Unique identifier of the data
-     * @return timestamp The timestamp when data was recorded
-     * @return dataType The type of climate data
-     * @return value The recorded climate data value
-     * @return location The geographical location of the data point
-     * @return provider The address of the data provider
-     * @return verified The verification status of the data
-     */
+
     function getDataPoint(bytes32 dataId) public view returns (
         uint256 timestamp,
         string memory dataType,
@@ -134,7 +93,7 @@ contract Project {
     ) {
         DataPoint memory data = climateData[dataId];
         require(data.timestamp > 0, "Data doesn't exist");
-        
+
         return (
             data.timestamp,
             data.dataType,
@@ -144,12 +103,59 @@ contract Project {
             data.verified
         );
     }
-    
-    /**
-     * @dev Returns the total number of data points
-     * @return Count of all data points
-     */
+
     function getDataCount() public view returns (uint256) {
         return dataIds.length;
+    }
+
+    /// NEW FUNCTION 1: Return all data IDs
+    function getAllDataIds() public view returns (bytes32[] memory) {
+        return dataIds;
+    }
+
+    /// NEW FUNCTION 2: Count verified data points
+    function getVerifiedDataCount() public view returns (uint256 count) {
+        for (uint i = 0; i < dataIds.length; i++) {
+            if (climateData[dataIds[i]].verified) {
+                count++;
+            }
+        }
+    }
+
+    /// NEW FUNCTION 3: Get data by index
+    function getDataByIndex(uint256 index) public view returns (
+        bytes32 dataId,
+        string memory dataType,
+        int256 value,
+        string memory location,
+        bool verified
+    ) {
+        require(index < dataIds.length, "Index out of bounds");
+        dataId = dataIds[index];
+        DataPoint storage d = climateData[dataId];
+        return (dataId, d.dataType, d.value, d.location, d.verified);
+    }
+
+    /// NEW FUNCTION 4: Revoke data by ID (owner only)
+    function revokeData(bytes32 dataId) public onlyOwner {
+        require(climateData[dataId].timestamp > 0, "Data doesn't exist");
+
+        delete climateData[dataId];
+        dataIdExists[dataId] = false;
+
+        for (uint i = 0; i < dataIds.length; i++) {
+            if (dataIds[i] == dataId) {
+                dataIds[i] = dataIds[dataIds.length - 1];
+                dataIds.pop();
+                break;
+            }
+        }
+
+        emit DataRevoked(dataId);
+    }
+
+    /// NEW FUNCTION 5: Check if data ID exists
+    function isDataIdExist(bytes32 dataId) public view returns (bool) {
+        return dataIdExists[dataId];
     }
 }
