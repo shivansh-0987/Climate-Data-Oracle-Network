@@ -41,10 +41,7 @@ contract Project {
         _;
     }
 
-    function setProviderAuthorization(address provider, bool status) public onlyOwner {
-        authorizedProviders[provider] = status;
-        emit ProviderAuthorized(provider, status)
-    }
+
 
     function submitData(
         string memory dataType,
