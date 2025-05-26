@@ -6,7 +6,7 @@ pragma solidity ^0.8.9;
  * @dev Smart contract for managing climate data oracles
  */
 contract Project {
-    address public owner;
+    address public owner:
     
     struct DataPoint {
         uint256 timestamp;
@@ -53,7 +53,7 @@ contract Project {
             value,
             location,
             msg.sender,
-            block.timestamp
+            block.times
         ));
         
         require(!dataIdExists[dataId], "Duplicate data");
