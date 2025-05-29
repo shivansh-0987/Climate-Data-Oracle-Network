@@ -12,7 +12,7 @@ contract Project {
         uint256 timestamp;
         string dataType;
         int256 value;
-        string location;
+        string location
         address provider;
         bool verified;
 
