@@ -6,17 +6,17 @@ pragma solidity ^0.8.9;
  * @dev Smart contract for managing climate data oracles
  */
 contract Project {
-    address public owner:
-    
-    struct
+    address public owner;
+
+    struct DataPoint {
         uint256 timestamp;
         string dataType;
         int256 value;
-        string location
+        string location;
         address provider;
         bool verified;
+    }
 
-    
     mapping(bytes32 => DataPoint) public climateData;
     bytes32[] public dataIds;
     mapping(address => bool) public authorizedProviders;
@@ -41,7 +41,11 @@ contract Project {
         _;
     }
 
-
+    // Owner can authorize or revoke providers
+    function setProviderAuthorization(address provider, bool status) external onlyOwner {
+        authorizedProviders[provider] = status;
+        emit ProviderAuthorized(provider, status);
+    }
 
     function submitData(
         string memory dataType,
@@ -53,7 +57,7 @@ contract Project {
             value,
             location,
             msg.sender,
-            block.times
+            block.timestamp
         ));
         
         require(!dataIdExists[dataId], "Duplicate data");
