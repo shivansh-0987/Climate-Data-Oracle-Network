@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
-
-/**
  * @title Climate Data Oracle Network
  * @dev Smart contract for managing climate data oracles
  */
