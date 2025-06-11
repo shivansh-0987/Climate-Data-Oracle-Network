@@ -9,7 +9,7 @@ contract Project {
     struct DataPoint {
         uint256 timestamp;
         string dataType;
-        int256 value;
+        int256 
         string location;
         address provider;
         bool verified;
