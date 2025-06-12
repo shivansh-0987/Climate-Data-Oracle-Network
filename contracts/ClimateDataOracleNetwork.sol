@@ -12,9 +12,7 @@ contract Project {
         int256 
         string location;
         address provider;
-        bool verified;
-    }
-
+        bool verified
     mapping(bytes32 => DataPoint) public climateData;
     bytes32[] public dataIds;
     mapping(address => bool) public authorizedProviders;
