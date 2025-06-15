@@ -1,19 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
  * @title Climate Data Oracle Network
- * @dev Smart contract for managing climate data oracles
- */
-contract Project {
-    address public owner;
-
-    struct DataPoint {
-        uint256 timestamp;
-        string dataType;
-        int256 
-        string location;
-        address provider;
-        bool verified
-
 
     struct DataPoint {
         uint256 timestamp;
