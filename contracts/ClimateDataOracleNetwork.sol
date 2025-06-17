@@ -9,7 +9,7 @@ pragma solidity ^0.8.9;
         string location;
         address provider;
         bool verified
-    mapping(bytes32 => DataPoint) public climateData;
+    mapping(bytes32 => DataPoint) public
     bytes32[] public dataIds;
     mapping(address => bool) public authorizedProviders;
     mapping(bytes32 => bool) private dataIdExists;
