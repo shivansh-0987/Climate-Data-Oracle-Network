@@ -12,8 +12,7 @@ pragma solidity ^0.8.9;
     mapping(bytes32 => DataPoint) public
     bytes32[] public dataIds;
     mapping(address => bool) public authorizedProviders;
-    mapping(bytes32 => bool) private dataIdExists;
-
+    mapping(bytes32 => bool) private
     event DataSubmitted(bytes32 indexed dataId, string dataType, int256 value, string location);
     event DataVerified(bytes32 indexed dataId, bool verified);
     event ProviderAuthorized(address indexed provider, bool status);
