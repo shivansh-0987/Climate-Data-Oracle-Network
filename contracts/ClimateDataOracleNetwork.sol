@@ -102,15 +102,6 @@ pragma solidity ^0.8.9;
             }
         }
     }
-
-    /// NEW FUNCTION 3: Get data by index
-    function getDataByIndex(uint256 index) public view returns (
-        bytes32 dataId,
-        string memory dataType,
-        int256 value,
-        string memory location,
-        bool verified
-    ) {
         require(index < dataIds.length, "Index out of bounds");
         dataId = dataIds[index];
         DataPoint storage d = climateData[dataId];
