@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+ // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
 /// @title Climate Data Oracle Network
@@ -150,3 +150,4 @@ contract ClimateDataOracle {
         return dataIdExists[dataId];
     }
 }
+
