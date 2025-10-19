@@ -99,12 +99,12 @@ contract ClimateDataOracle {
         return dataIds.length;
     }
 
-    // 🔧 NEW FUNCTION 1: Return all data IDs
+    // ? NEW FUNCTION 1: Return all data IDs
     function getAllDataIds() public view returns (bytes32[] memory) {
         return dataIds;
     }
 
-    // 🔧 NEW FUNCTION 2: Count verified data points
+    // ? NEW FUNCTION 2: Count verified data points
     function getVerifiedDataCount() public view returns (uint256 count) {
         for (uint i = 0; i < dataIds.length; i++) {
             if (climateData[dataIds[i]].verified) {
@@ -113,7 +113,7 @@ contract ClimateDataOracle {
         }
     }
 
-    // 🔧 NEW FUNCTION 3: Get data by index
+    // ? NEW FUNCTION 3: Get data by index
     function getDataByIndex(uint index) public view returns (
         bytes32 dataId,
         string memory dataType,
@@ -127,7 +127,7 @@ contract ClimateDataOracle {
         return (dataId, d.dataType, d.value, d.location, d.verified);
     }
 
-    // 🔧 NEW FUNCTION 4: Revoke data by ID (owner only)
+    // ? NEW FUNCTION 4: Revoke data by ID (owner only)
     function revokeData(bytes32 dataId) public onlyOwner {
         require(climateData[dataId].timestamp > 0, "Data doesn't exist");
 
@@ -145,9 +145,12 @@ contract ClimateDataOracle {
         emit DataRevoked(dataId);
     }
 
-    // 🔧 NEW FUNCTION 5: Check if data ID exists
+    // ? NEW FUNCTION 5: Check if data ID exists
     function isDataIdExist(bytes32 dataId) public view returns (bool) {
         return dataIdExists[dataId];
     }
 }
 
+// START
+Updated on 2025-10-19
+// END
