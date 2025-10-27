@@ -1,4 +1,4 @@
- @title Climate Data Oracle Network
+ @title Climate Data Oracle Network 
 contract ClimateDataOracle {
     struct DataPoint {
         uint256 timestamp;
@@ -102,6 +102,7 @@ contract ClimateDataOracle {
         return dataIdExists[dataId];
     }
 }
+
 
 END
 // 
